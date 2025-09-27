@@ -1,0 +1,41 @@
+{
+  "name": "v7-vue",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^6.7.2",
+    "@lottiefiles/dotlottie-vue": "^0.6.3",
+    "@vueup/vue-quill": "^1.2.0",
+    "axios": "^1.8.4",
+    "bootstrap": "^5.3.5",
+    "bootstrap-icons": "^1.11.3",
+    "bootstrap-vue-next": "^0.28.6",
+    "lodash.debounce": "^4.0.8",
+    "pinia": "^3.0.2",
+    "sweetalert2": "^11.17.2",
+    "v7-vue": "file:",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.0",
+    "vue-select": "^4.0.0-beta.6",
+    "vue-sweetalert2": "^5.0.11",
+    "vue-tree-dnd": "^0.2.2",
+    "vue3-otp-input": "^0.5.30",
+    "vue3-perfect-scrollbar": "^2.0.0",
+    "vue3-select2-component": "^0.1.7",
+    "vuedraggable": "^4.1.0",
+    "vuefinder": "^2.7.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.3",
+    "autoprefixer": "^10.4.21",
+    "unplugin-vue-components": "^28.4.1",
+    "vite": "^6.2.4",
+    "vite-plugin-vue-devtools": "^7.7.2"
+  }
+}
