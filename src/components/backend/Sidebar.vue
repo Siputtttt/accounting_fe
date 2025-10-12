@@ -13,6 +13,7 @@ import SidebarItem from "./SidebarItem.vue";
 import { useMessageStore } from "@/store/messageStore";
 import { PerfectScrollbar  } from 'vue3-perfect-scrollbar';
 import 'vue3-perfect-scrollbar/style.css';
+import MenuData from './menuData.js'
 
 
 const { proxy } = getCurrentInstance();
@@ -63,7 +64,10 @@ const fetchMenu = async () => {
       responseType: "json",
     });
     if (response && response.data.data) {
-      localStorage.setItem("menus", JSON.stringify(response.data.data));
+      const apiMenus = response.data.data;
+      const mergedMenus = [...MenuData, ...apiMenus];
+
+      localStorage.setItem("menus", JSON.stringify(mergedMenus));
       menus.value = JSON.parse(localStorage.getItem("menus"));
     }
   } catch (error) {}
@@ -122,18 +126,18 @@ const onHoverOut = () => {
 
 <template>
   <div >
-
     <transition name="slide">
       <!--
-      <div 
+        <div 
         class="sidebar "  
         @mouseenter="$emit('toggleSidebar')"
-         @mouseleave="$emit('toggleSidebar')"
-         :class="{ expanded: isExpanded }"
-      >-->
-      <div 
+        @mouseleave="$emit('toggleSidebar')"
+        :class="{ expanded: isExpanded }"
+        >-->
+        <div 
         class="sidebar "    :class="{ expanded: isExpanded }"
-      > 
+        > 
+
         <PerfectScrollbar> 
         <div class="sidebar-menu">
           <ul class="nav flex-column">

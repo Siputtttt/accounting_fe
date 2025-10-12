@@ -1,22 +1,22 @@
  export default [ 
  {
-    path: '/Album',
-    name: 'Album',
-    component: () => import(`@/views/modules/Album/Album.vue`),
+    path: '/Penyewaan',
+    name: 'Penyewaan',
+    component: () => import(`@/views/modules/Penyewaan/Penyewaan.vue`),
     meta: { layout: 'dashboard', public: true, auth: false },
 },
 
  {
-    path: '/Photo',
-    name: 'Photo',
-    component: () => import(`@/views/modules/Photo/Photo.vue`),
+    path: '/TransaksiPenyewaan',
+    name: 'TransaksiPenyewaan',
+    component: () => import(`@/views/modules/TransaksiPenyewaan/TransaksiPenyewaan.vue`),
     meta: { layout: 'dashboard', public: true, auth: false },
 },
 
  {
-    path: '/eselon',
-    name: 'eselon',
-    component: () => import(`@/views/modules/eselon/Eselon.vue`),
+    path: '/Customer',
+    name: 'Customer',
+    component: () => import(`@/views/modules/Customer/Customer.vue`),
     meta: { layout: 'dashboard', public: true, auth: false },
 },
  ] 

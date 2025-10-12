@@ -2,17 +2,19 @@
 import { ref, onMounted, getCurrentInstance } from "vue";
 const { proxy } = getCurrentInstance();
 const props = defineProps({
-    modelValue:  String
- 
+  modelValue: String
+
 })
-const emit = defineEmits(["update"]);
-const handleClick =  async (event) => { 
-    const href = event.currentTarget.getAttribute('href');
-    const str = href.replace("#/", "");
-    const str2 = str.replace("/", "");
-    emit("update:modelValue", str2);
+const emit = defineEmits(["update", "update:modelValue", "close"]);
+const handleClick = async (event) => {
+  const href = event.currentTarget.getAttribute('href');
+  const str = href.replace("#/", "");
+  const str2 = str.replace("/", "");
+  const finalIcon = `bi bi-${str2}`;
+  emit("update:modelValue", finalIcon);
+  emit("close");
 }
-onMounted(() => {  
+onMounted(() => {
 })
 
 </script>
