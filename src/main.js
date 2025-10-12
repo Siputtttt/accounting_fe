@@ -5,6 +5,7 @@ import { createBootstrap } from 'bootstrap-vue-next';
 import VueSweetalert2 from 'vue-sweetalert2';
 import vSelect from 'vue-select';
 import sximoHelpers from './util/sximo';
+import currencyDirectives from './directives/currency';
 import { useStore } from '@/store';
 
 const components = import.meta.glob('./components/cruds/*.vue', {
@@ -31,7 +32,25 @@ app.use(createBootstrap());
 app.use(VueSweetalert2);
 app.use(sximoHelpers);
 app.use(VueFinder);
+app.directive("currencyDirectives", currencyDirectives);
 app.component('v-select', vSelect);
+app.directive("rupiah", {
+  beforeMount(el, binding, vnode) {
+    el.addEventListener("input", (e) => {
+      let raw = e.target.value.replace(/\D/g, ""); // ambil angka saja
+      if (!raw) raw = "0";
+
+      // update tampilan dengan format Rupiah
+      e.target.value = "Rp " + parseInt(raw).toLocaleString("id-ID");
+
+      // update v-model biar isinya integer
+      const model = binding.instance[binding.expression];
+      if (typeof model !== "undefined") {
+        binding.instance[binding.expression] = parseInt(raw);
+      }
+    });
+  },
+});
 
 for (const path in components) {
     const component = components[path].default;

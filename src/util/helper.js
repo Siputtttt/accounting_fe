@@ -28,4 +28,48 @@ function insertNodeAt(fatherNode, node, position) {
     fatherNode.insertBefore(node, refNode);
 }
 
-export { insertNodeAt, camelize, console, removeNode };
+function inAWordCurrency(n) {
+  const satuan = [
+    "",
+    "Satu",
+    "Dua",
+    "Tiga",
+    "Empat",
+    "Lima",
+    "Enam",
+    "Tujuh",
+    "Delapan",
+    "Sembilan",
+    "Sepuluh",
+    "Sebelas",
+  ];
+
+  n = Math.floor(n);
+
+  if (n < 12) return " " + satuan[n];
+  if (n < 20) return inAWordCurrency(n - 10) + " Belas";
+  if (n < 100)
+    return inAWordCurrency(Math.floor(n / 10)) + " Puluh" + inAWordCurrency(n % 10);
+  if (n < 200) return " Seratus" + inAWordCurrency(n - 100);
+  if (n < 1000)
+    return inAWordCurrency(Math.floor(n / 100)) + " Ratus" + inAWordCurrency(n % 100);
+  if (n < 2000) return " Seribu" + inAWordCurrency(n - 1000);
+  if (n < 1000000)
+    return (
+      inAWordCurrency(Math.floor(n / 1000)) + " Ribu" + inAWordCurrency(n % 1000)
+    );
+  if (n < 1000000000)
+    return (
+      inAWordCurrency(Math.floor(n / 1000000)) + " Juta" + inAWordCurrency(n % 1000000)
+    );
+  if (n < 1000000000000)
+    return (
+      inAWordCurrency(Math.floor(n / 1000000000)) +
+      " Milyar" +
+      inAWordCurrency(n % 1000000000)
+    );
+
+  return "Angka terlalu besar";
+}
+
+export { insertNodeAt, camelize, console, removeNode, inAWordCurrency };

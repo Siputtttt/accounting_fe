@@ -88,8 +88,8 @@ const handleLogin = async (event) => {
         localStorage.setItem("token", payload.token);
         localStorage.setItem("profile", JSON.stringify(payload.data));
       } else {
-        sessionStorage.setItem("token", payload.token);
-        sessionStorage.setItem("profile", JSON.stringify(payload.data));
+        localStorage.setItem("token", payload.token);
+        localStorage.setItem("profile", JSON.stringify(payload.data));
       }
 
       try {
