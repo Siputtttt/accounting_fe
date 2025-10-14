@@ -16,23 +16,31 @@ const unitsLabel = ref([]);
 const selected = ref([]);
 const modalItem = ref(false);
 
+const status = ref([
+    { id: '0', name: 'Tidak Aktif' },
+    { id: '1', name: 'Aktif' },
+]);
+
 const form = ref({
     action_task: 'save_items',
     id: '',
     name: '',
-    units: '',
+    current_stock: '',
     units_label: 'harian',
     price: '',
+    is_active: '1',
+    description: '',
+    item_type: 'rented',
 });
 
 const columns = [
     { key: 'no', label: 'No', sortable: false, tdClass: 'text-center', thClass: 'text-center', thStyle: { width: '50px' } },
     { key: 'id', label: 'ID', sortable: false, tdClass: 'text-center', thClass: 'text-center', thStyle: { width: '50px' } },
     { key: 'name', label: 'Nama Item', sortable: true },
-    { key: 'units', label: 'Unit', sortable: true },
+    { key: 'current_stock', label: 'Jumlah Unit', sortable: true },
     { key: 'price', label: 'Harga Sewa', sortable: true },
     { key: 'amount', label: 'Total', sortable: true },
-    // { key: 'action', label: 'Aksi', sortable: false },
+    { key: 'is_active', label: 'status', sortable: false },
 ];
 
 const edit = (item) => {
@@ -40,9 +48,12 @@ const edit = (item) => {
         action_task: 'save_items',
         id: item.id,
         name: item.name,
-        units: item.units,
+        current_stock: item.current_stock,
         price: proxy.$formatCurrency(item.price),
         units_label: item.units_label,
+        is_active: item.is_active,
+        description: item.description,
+        item_type: item.item_type,
     };
     modalItem.value = true;
 };
@@ -50,10 +61,10 @@ const edit = (item) => {
 const save = async () => {
     loading.value = true;
 
-	form.value.price = parseInt(form.value.price.replace(/\D/g, "")) || 0;
+    form.value.price = parseInt(form.value.price.replace(/\D/g, '')) || 0;
     try {
         const response = await store.postData({
-            url: 'api/Penyewaan',
+            url: 'api/Item',
             params: form.value,
             headers: {
                 'Content-Type': 'application/json',
@@ -76,9 +87,11 @@ const reset = () => {
         action_task: 'save_items',
         id: '',
         name: '',
-        units: '',
+        current_stock: '',
         units_label: 'harian',
         price: '',
+        is_active: '1',
+        description: '',
     };
     modalItem.value = false;
 };
@@ -103,7 +116,7 @@ const removeById = async (event) => {
         loading.value = true;
         if (result.isConfirmed) {
             const response = await store.deleteData({
-                url: 'api/Penyewaan/' + selected.value,
+                url: 'api/Item/' + selected.value,
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -126,7 +139,7 @@ const fetchData = async () => {
     loading.value = true;
     try {
         const response = await store.getData({
-            url: `api/Penyewaan`,
+            url: `api/Item?it=rented`,
         });
         if (response.data.status === 'success') {
             itemRented.value = response.data.data.item_rented;
@@ -145,7 +158,6 @@ const fetchData = async () => {
 onMounted(() => {
     fetchData();
 });
-
 </script>
 <template>
     <div class="wrapper">
@@ -165,18 +177,9 @@ onMounted(() => {
                         <i class="bi bi-trash3"></i>
                     </div>
                 </div>
-                <!-- <div class="col-md-3">
-					<BFormCheckbox v-if="access.is_edit == '1'" v-model="is_edit" value="1" unchecked-value="0">Enable
-						Edit Mode </BFormCheckbox>
-				</div> -->
-                <!-- <div class="col-md-3">
-                    <BFormInput
-                        v-model="filter"
-                        size="sm"
-                        type="search"
-                        placeholder="Type to Search"
-                    />
-                </div> -->
+                <div class="col-md-3">
+                    <BFormInput v-model="filter" size="sm" type="search" placeholder="Type to Search" />
+                </div>
             </div>
         </div>
         <div class="page">
@@ -200,6 +203,12 @@ onMounted(() => {
                                 <BFormCheckbox v-model="selected" :value="data.item.id" unchecked-value="0"> </BFormCheckbox>
                             </div>
                         </template>
+                        <template #cell(is_active)="data">
+                            <div class="">
+                                <span v-if="data.item.is_active == 1" class="badge bg-success">Aktif</span>
+                                <span v-else class="badge bg-danger">Tidak Aktif</span>
+                            </div>
+                        </template>
                     </BTable>
                     <b-overlay :show="loading" no-wrap></b-overlay>
                 </div>
@@ -214,7 +223,7 @@ onMounted(() => {
                     <BFormInput size="sm" id="name" v-model="form.name" type="text" required />
                 </BFormGroup>
                 <BFormGroup label="Unit" label-for="units" class="mb-3">
-                    <BFormInput size="sm" id="units" v-model="form.units" type="number" required />
+                    <BFormInput size="sm" id="units" v-model="form.current_stock" type="number" required />
                 </BFormGroup>
                 <BFormGroup label="Harga Sewa" label-for="price" class="mb-3">
                     <BFormInput size="sm" id="price" v-model="form.price" v-rupiah required />
@@ -225,6 +234,14 @@ onMounted(() => {
                             {{ label }}
                         </option>
                     </BFormSelect>
+                </BFormGroup>
+                <BFormGroup label="Status Pembayaran" label-for="no" class="mb-3">
+                    <div class="d-flex flex-wrap gap-3">
+                        <BFormRadioGroup v-model="form.is_active" :options="status" value-field="id" text-field="name" />
+                    </div>
+                </BFormGroup>
+                <BFormGroup label="Deskripsi" label-for="description" class="mb-3">
+                    <BFormTextarea id="description" v-model="form.description" rows="3" size="sm" class="form-control" />
                 </BFormGroup>
 
                 <div class="sx-modal-footer mt-5">

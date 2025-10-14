@@ -5,6 +5,7 @@ import { useRouter } from 'vue-router';
 import ItemsTransaction from './ItemsTransaction.vue';
 import { PerfectScrollbar } from 'vue3-perfect-scrollbar';
 import FormCustomer from './FormCustomer.vue';
+import InvoicePrint from './InvoicePrint.vue';
 
 const { proxy } = getCurrentInstance();
 const router = useRouter();
@@ -24,6 +25,8 @@ const formInvoice = ref([]);
 const itemTransaction = ref([]);
 const customerList = ref([]);
 const modalCustomer = ref(false);
+const modalPrint = ref(false);
+const items = ref([]);
 
 const columns = [
     { key: 'no', label: 'No', sortable: false, tdClass: 'text-center', thClass: 'text-center', thStyle: { width: '50px' } },
@@ -45,6 +48,14 @@ watch(
     (val) => {}
 );
 
+const printInvoice = async (item) => {
+    edit(item);
+    if (item.status != 'confirmed') {
+        proxy.$messageError(proxy, 'Failed', 'Invoice belum dikonfirmasi, silahkan konfirmasi terlebih dahulu. lalu simpan');
+        return;
+    }
+    modalPrint.value = true;
+};
 const edit = async (item) => {
     loading.value = true;
     try {
@@ -52,6 +63,7 @@ const edit = async (item) => {
             url: `api/Invoice/getInvoiceById?id=${item.id}`,
         });
         if (response.data.status === 'success') {
+            items.value = response.data.data.items_transaction;
             formInvoice.value = response.data.data.invoice;
 
             if (!formInvoice.value.date) {
@@ -192,7 +204,7 @@ const fetchData = async () => {
     loading.value = true;
     try {
         const response = await store.getData({
-            url: `api/TransaksiPenyewaan`,
+            url: `api/Transaksi?it=rented`,
         });
         if (response.data.status === 'success') {
             transaction.value = response.data.data.transaction;
@@ -263,6 +275,14 @@ onMounted(() => {
                                 {{ $formatCurrency(data.item.total_amount) }}
                             </div>
                         </template>
+                        <template #cell(status)="data">
+                            <div>
+                                <span v-if="data.item.status == 'draft'" class="badge bg-warning">{{ data.item.status }}</span>
+                                <span v-if="data.item.status == 'confirmed'" class="badge bg-success">{{ data.item.status }}</span>
+                                <span v-if="data.item.status == 'pending'" class="badge bg-info">{{ data.item.status }}</span>
+                                <span v-if="data.item.status == 'canceled'" class="badge bg-danger">{{ data.item.status }}</span>
+                            </div>
+                        </template>
                     </BTable>
                     <b-overlay :show="loading" no-wrap></b-overlay>
                 </div>
@@ -317,7 +337,7 @@ onMounted(() => {
                     </div>
 
                     <div class="section-title pointer" v-b-toggle.customer-collapse @click="formInvoice.customer_id != null">
-                        <span>Customer</span>
+                        <span>Pelanggan</span>
                     </div>
 
                     <BCollapse id="customer-collapse" class="mt-3 mb-5">
@@ -328,7 +348,7 @@ onMounted(() => {
                                         <v-select :options="customerList" v-model="formInvoice.customer_id" label="name" :reduce="(option) => option.id" placeholder="Pilih Customer" class="flex-grow-1" />
                                         <button type="button" class="btn btn-sm btn-outline-primary d-flex align-items-center gap-1 px-2" @click="modalCustomer = true">
                                             <i class="bi bi-plus-circle"></i>
-                                            <span class="d-none d-sm-inline">Tambah</span>
+                                            <span class="d-none d-sm-inline fs-6">Tambah</span>
                                         </button>
                                     </div>
                                 </BFormGroup>
@@ -376,10 +396,18 @@ onMounted(() => {
                 </PerfectScrollbar>
 
                 <div class="text-right d-flex justify-content-end gap-2 mt-5">
+                    <button type="button" class="btn btn-sm btn-outline-primary" style="font-size: 11px" @click="printInvoice(formInvoice)"><i class="bi bi-printer"></i> Print</button>
                     <button type="button" class="btn btn-sm btn-outline-warning" style="font-size: 11px" @click="modalTransactions = false"><i class="bi bi-x-circle me-1"></i> Cancel</button>
                     <button type="submit" class="btn btn-sm btn-outline-success" style="font-size: 11px"><i class="bi bi-save me-1"></i> Save</button>
                 </div>
             </BForm>
+
+            <BModal v-if="modalTransactions" v-model="modalPrint" title="Preview Invoice" size="xl" no-header no-footer no-close-on-backdrop scrollable>
+                <InvoicePrint :invoice="formInvoice" :items="items" :customer="selectedCustomer" />
+                <div class="text-right d-flex justify-content-end gap-2 mt-5">
+                    <button type="button" class="btn btn-sm btn-warning" style="font-size: 11px" @click="modalPrint = false"><i class="bi bi-x-circle me-1"></i> Batal</button>
+                </div>
+            </BModal>
         </BModal>
     </div>
 </template>

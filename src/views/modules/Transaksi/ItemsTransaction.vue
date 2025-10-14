@@ -19,7 +19,7 @@ const form = ref({
     action_task: 'save_item_rented',
     id: '',
     invoice_id: props.invoice.id,
-    id_items_rented: '',
+    item_id: '',
     quantity: '',
 });
 
@@ -41,7 +41,7 @@ const addItem = () => {
         action_task: 'save_item_rented',
         id: '',
         invoice_id: props.invoice.id,
-        id_items_rented: '',
+        item_id: '',
         quantity: '',
     };
     modalItem.value = true;
@@ -52,7 +52,7 @@ const edit = (item) => {
         action_task: 'save_item_rented',
         id: item.id,
         invoice_id: props.invoice.id,
-        id_items_rented: item.id_items_rented,
+        item_id: item.item_id,
         quantity: item.quantity,
     };
     modalItem.value = true;
@@ -62,7 +62,7 @@ const saveItem = async () => {
 
     try {
         const response = await store.postData({
-            url: 'api/TransaksiPenyewaan',
+            url: 'api/Transaksi',
             params: form.value,
             headers: {
                 'Content-Type': 'application/json',
@@ -101,7 +101,7 @@ const removeById = async (event) => {
         loading.value = true;
         if (result.isConfirmed) {
             const response = await store.deleteData({
-                url: 'api/TransaksiPenyewaan/' + selected.value,
+                url: 'api/Transaksi/' + selected.value,
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -124,7 +124,7 @@ const fetchData = async () => {
     loading.value = true;
     try {
         const response = await store.getData({
-            url: 'api/TransaksiPenyewaan/getItems?id=' + props.invoice.id,
+            url: 'api/Transaksi/getItems?id=' + props.invoice.id,
         });
         if (response.data.status === 'success') {
             item.value = response.data.data.items_transaction;
@@ -194,7 +194,7 @@ onMounted(() => {
     <BModal v-model="modalItem" title="Transaksi" size="md" no-header no-footer :no-close-on-backdrop="true">
         <BForm @submit.prevent="saveItem">
             <BFormGroup label="Item" label-for="no" class="mb-3">
-                <v-select :options="itemRented" v-model="form.id_items_rented" label="name" :reduce="(option) => option.id" placeholder="Pilih Item" size="sm">
+                <v-select :options="itemRented" v-model="form.item_id" label="name" :reduce="(option) => option.id" placeholder="Pilih Item" size="sm">
                     <template #option="{ name, units, units_label, price }"> {{ name }} - {{ units_label }} (Rp {{ price }}) </template>
                 </v-select>
             </BFormGroup>

@@ -1,11 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { useStore } from '@/store';
 import moduleRoutes from './module';
+import customRoutes from './custom';
 import coreRoutes from './core';
 import themeRoutes from '@/views/Theme/elima/route';
 import defaultRoutes from '@/views/Theme/default/route';
 
-const routes = [...moduleRoutes, ...coreRoutes, ...themeRoutes, ...defaultRoutes];
+const routes = [...moduleRoutes, ...customRoutes, ...coreRoutes, ...themeRoutes, ...defaultRoutes];
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
