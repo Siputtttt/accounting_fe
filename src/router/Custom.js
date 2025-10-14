@@ -5,4 +5,5 @@ export default [
         component: () => import(`@/views/modules/RekapTransaksiPenyewaan/RekapTransaksiPenyewaan.vue`),
         meta: { layout: 'dashboard', public: true, auth: false },
     },
+    
 ];
