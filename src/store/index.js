@@ -6,8 +6,8 @@ export const useStore = defineStore('main', {
     state: () => ({
         token: localStorage.getItem('token') || sessionStorage.getItem('token'),
         profile: JSON.parse(localStorage.getItem('profile') || sessionStorage.getItem('profile')),
-        baseUrl: 'http://127.0.0.1:8000/',
-        // baseUrl: "http://203.194.113.219/srv/sximov7/",
+        // baseUrl: 'http://127.0.0.1:8000/',
+        baseUrl: "http://203.194.113.219/accounting-api/",
     }),
 
     actions: {
