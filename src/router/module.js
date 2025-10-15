@@ -26,4 +26,18 @@
     component: () => import(`@/views/modules/Transaksi/Transaksi.vue`),
     meta: { layout: 'dashboard', public: true, auth: false },
 },
+
+ {
+    path: '/Branch',
+    name: 'Branch',
+    component: () => import(`@/views/modules/Branch/Branch.vue`),
+    meta: { layout: 'dashboard', public: true, auth: false },
+},
+
+ {
+    path: '/UserManagement',
+    name: 'UserManagement',
+    component: () => import(`@/views/modules/UserManagement/UserManagement.vue`),
+    meta: { layout: 'dashboard', public: true, auth: false },
+},
  ] 
